@@ -33,6 +33,8 @@ async function main() {
   await mongoose.connect(dbURL);
   console.log("Connected to DB"); // ← will now always print before server starts
 
+  app.set("trust proxy", 1); // ← add this first
+
   const store = new MongoStore({
     mongoUrl: dbURL,
     crypto: { secret: process.env.SECRET },
