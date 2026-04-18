@@ -34,6 +34,8 @@ app.use(express.static(path.join(__dirname, "public")));
 
 let dbURL = process.env.ATLASDB_URL;
 
+console.log("DB URL:", dbURL);
+
 async function main() {
   await mongoose.connect(dbURL);
 
