@@ -31,19 +31,15 @@ let dbURL = process.env.ATLASDB_URL;
 
 async function main() {
   await mongoose.connect(dbURL);
-  console.log("Connected to DB");
+  console.log("Connected to DB"); // ← will now always print before server starts
 
   const store = MongoStore.create({
     client: mongoose.connection.getClient(),
-    crypto: {
-      secret: process.env.SECRET,
-    },
+    crypto: { secret: process.env.SECRET },
     touchAfter: 24 * 3600,
   });
 
-  store.on("error", (err) => {
-    console.log("Mongo session store error:", err);
-  });
+  store.on("error", (err) => console.log("Session store error:", err));
 
   const sessionOption = {
     store,
@@ -58,10 +54,8 @@ async function main() {
     },
   };
 
-  // ✅ All middleware that depends on session goes inside main()
   app.use(session(sessionOption));
   app.use(flash());
-
   app.use(passport.initialize());
   app.use(passport.session());
 
@@ -76,25 +70,23 @@ async function main() {
     next();
   });
 
-  // Routes
   app.use("/listings", listingRouter);
   app.use("/listings/:id/reviews", reviewRouter);
   app.use("/", userRouter);
 
-  // 404 handler
   app.all("/{*any}", (req, res, next) => {
     next(new ExpressError(404, "Page not found"));
   });
 
-  // Error handler
   app.use((err, req, res, next) => {
     let { status = 500, message = "Something went wrong!!" } = err;
     res.status(status).render("error.ejs", { status, message });
   });
 }
 
-main().catch((err) => console.log(err));
-
-app.listen(3000, () => {
-  console.log("app is listening on port 3000");
-});
+// ✅ await main() so listen only fires after everything is ready
+main()
+  .then(() => {
+    app.listen(3000, () => console.log("app is listening on port 3000"));
+  })
+  .catch((err) => console.log(err));
