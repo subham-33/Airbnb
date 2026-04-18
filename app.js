@@ -50,7 +50,7 @@ main()
 //creating a session
 
 const store = MongoStore.connect({
-  mongoUmongoUrl: dbURL, //DB location
+  mongoUrl: dbURL, //DB location
   crypto: {
     secret: process.env.SECRET,
   },
