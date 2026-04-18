@@ -1,0 +1,85 @@
+<% layout("/layouts/boilerplate") -%>
+
+
+    <!-- new.ejs -->
+    <script>
+        const mapToken = "<%= process.env.MAP_TOKEN %>";
+    </script>
+
+    <div class="row">
+        <div class="col-8 offset-2">
+
+            <br><br>
+            <h3>Create a New Listing</h3>
+
+            <form method="post" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" name="listing[title]" class="form-control" placeholder="Enter your Title"
+                        required />
+                    <div class="valid-feedback">Looks Good</div>
+                    <div class="invalid-feedback">Enter Valid Title</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea name="listing[description]" class="form-control" placeholder="Enter Description"
+                        required></textarea>
+
+                    <div class="valid-feedback">Looks Good</div>
+                    <div class="invalid-feedback">Enter Valid Description</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="image" class="form-label">Upload Image</label>
+                    <input name="listing[image]" type="file" class="form-control" required>
+                </div>
+
+                <div class="row">
+                    <div class="mb-3 col-md-4">
+                        <label for="price" class="form-label">Price</label>
+                        <input type="number" min="799" class="form-control" name="listing[price]"
+                            placeholder="Add Listing Price" required />
+
+                        <div class="valid-feedback">Looks Good</div>
+                        <div class="invalid-feedback">Min: 799</div>
+                    </div>
+
+                    <div class="mb-3 col-md-8">
+                        <label for="country" class="form-label">Country</label>
+                        <input type="text" name="listing[country]" class="form-control"
+                            placeholder="Enter your Country Name" required />
+
+                        <div class="valid-feedback">Looks Good</div>
+                        <div class="invalid-feedback">Enter Valid Country</div>
+                    </div>
+
+                </div>
+
+                <div class="mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" id="location" name="listing[location]" class="form-control" placeholder="Enter your Location"
+                        required />
+
+                    <div class="valid-feedback">Looks Good</div>
+                    <div class="invalid-feedback">Enter Valid Location</div>
+                </div>
+
+                <input type="hidden" name="listing[lat]" id="lat" value="" />
+                <input type="hidden" name="listing[lng]" id="lng" value="" />
+
+                <div class="mb-3">
+                    <label class="form-label">Pin your location on map</label>
+                    <div id="map" style="height: 300px; border-radius: 8px;"></div>
+                    <small class="text-muted">Drag the marker to set exact location</small>
+                </div>
+
+                <br>
+                <button class="btn btn-dark add-btn">Add</button>
+                <br><br>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/newMap.js"></script>

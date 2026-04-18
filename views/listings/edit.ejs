@@ -1,0 +1,93 @@
+<% layout("/layouts/boilerplate") -%>
+
+<script>
+  const mapToken = "<%= process.env.MAP_TOKEN %>";
+  const listing = <%- JSON.stringify(listing) %>;
+</script>
+
+    <div class="row">
+
+        <div class="col-8 offset-2">
+            <br>
+            <h3>Edit Your details Here...</h3> <br>
+
+            <form method="post" action="/listings/<%= listing._id %>?_method=PATCH" novalidate class="needs-validation"
+                enctype="multipart/form-data">
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" id="title" name="listing[title]" class="form-control"
+                        value="<%= listing.title %>" required />
+
+                    <div class="valid-feedback">Looks Good</div>
+                    <div class="invalid-feedback">Enter Valid Title</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <input type="text" name="listing[description]" class="form-control"
+                        value="<%= listing.description %>" required />
+
+                    <div class="valid-feedback">Looks Good</div>
+                    <div class="invalid-feedback">Enter Valid Description</div>
+                </div>
+
+                <div class="mb-3">
+                    original image <br>
+                    <img src="<%= originalImageUrl %>" class="img-thumbnail shadow-sm" style="width:200px">
+                </div>
+
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image URL/Link</label>
+                    <input type="file" name="listing[image]" class="form-control" />
+                </div>
+
+                <div class="row">
+
+                    <div class="mb-3 col-md-4">
+                        <label for="price" class="form-label">Price</label>
+                        <input type="number" min="799" name="listing[price]" class="form-control"
+                            value="<%= listing.price %>" required />
+
+                        <div class="valid-feedback">Looks Good</div>
+                        <div class="invalid-feedback">Min: 799</div>
+                    </div>
+
+                    <div class="mb-3 col-md-8">
+                        <label for="country" class="form-label">Country</label>
+                        <input type="text" name="listing[country]" class="form-control" value="<%= listing.country %>"
+                            required />
+
+                        <div class="valid-feedback">Looks Good</div>
+                        <div class="invalid-feedback">Enter Valid Country</div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" id="location" name="listing[location]" class="form-control" value="<%= listing.location %>"
+                        required />
+
+                    <div class="valid-feedback">Looks Good</div>
+                    <div class="invalid-feedback">Enter Valid Location</div>
+                </div>
+
+                <!-- Hidden inputs to store dragged coordinates -->
+                <input type="hidden" name="listing[lat]" id="lat" value="" />
+                <input type="hidden" name="listing[lng]" id="lng" value="" />
+
+                <!-- Map div -->
+                <div class="mb-3">
+                    <label class="form-label">Pin your location on map</label>
+                    <div id="map" style="height: 300px; border-radius: 8px;"></div>
+                    <small class="text-muted">Drag the marker to adjust exact location</small>
+                </div>
+
+                <br />
+                <button class="btn btn-dark btn-edit">Submit</button>
+                <br><br>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/editMap.js"></script>
