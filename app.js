@@ -38,49 +38,45 @@ console.log("DB URL:", dbURL);
 
 async function main() {
   await mongoose.connect(dbURL);
+  console.log("Connected to DB");
 
-  // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
-}
-main()
-  .then(() => {
-    console.log("Connected to DB");
-  })
-  .catch((err) => {
-    console.log(err);
+  // ✅ Inside main — connection is guaranteed ready here
+  const store = MongoStore.create({
+    client: mongoose.connection.getClient(),
+    crypto: {
+      secret: process.env.SECRET,
+    },
+    touchAfter: 24 * 3600,
   });
 
-//creating a session
+  store.on("error", (err) => {
+    console.log("Mongo session store error:", err);
+  });
 
-const store = MongoStore.create({
-  mongoUrl: dbURL, //DB location
-  crypto: {
+  const sessionOption = {
+    store,
     secret: process.env.SECRET,
-  },
-  touchAfter: 24 * 3600, //interval for session update in seconds
-});
+    resave: false,
+    saveUninitialized: false, // ← false is best practice
+    cookie: {
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    },
+  };
 
-store.on("error", (err) =>{
+  // ✅ Must also be inside main — needs store to be ready
+  app.use(session(sessionOption));
+  app.use(flash());
+}
 
-  console.log("there is an error in mongo session store", err)
-})
-
-const sessionOption = {
-  store,
-  secret: process.env.SECRET,
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000, //after 7 days(time is in milli second)
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: true, //for security porpuse to stop cross-scrpting attack
-  },
-};
+main().catch((err) => console.log(err));
 
 // //Home page
 // app.get("/", (req, res) => {
 //   res.send("Hi, Im root");
 // });
-
 
 app.use(session(sessionOption)); // using the session with the options
 app.use(flash()); //always use flash before the routes
