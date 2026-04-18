@@ -49,7 +49,7 @@ main()
 
 //creating a session
 
-const store = MongoStore.connect({
+const store = MongoStore.create({
   mongoUrl: dbURL, //DB location
   crypto: {
     secret: process.env.SECRET,
@@ -57,7 +57,7 @@ const store = MongoStore.connect({
   touchAfter: 24 * 3600, //interval for session update in seconds
 });
 
-store.on("error", () =>{
+store.on("error", (err) =>{
 
   console.log("there is an error in mongo session store", err)
 })
