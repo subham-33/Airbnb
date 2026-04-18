@@ -33,7 +33,7 @@ async function main() {
   await mongoose.connect(dbURL);
   console.log("Connected to DB"); // ← will now always print before server starts
 
-  const store = MongoStore.create({
+  const store = MongoStore({
     mongoUrl: dbURL,
     crypto: { secret: process.env.SECRET },
     touchAfter: 24 * 3600,
